@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>App Meteo</title>
+</head>
+<body>
+
+<h2>🌦️ App Meteo</h2>
+
+<input type="text" id="city" placeholder="Inserisci città">
+<button onclick="getWeather()">Cerca</button>
+
+<table border="1" id="table" style="margin-top:20px;">
+    <tr>
+        <th>Giorno</th>
+        <th>Temperatura (°C)</th>
+    </tr>
+</table>
+
+<script>
+function getWeather() {
+    let city = document.getElementById("city").value;
+
+    fetch("weather.php?city=" + city)
+        .then(response => response.text()) // leggi come testo per debug
+        .then(text => {
+            console.log("DEBUG:", text); // vedi cosa arriva dal backend
+            return JSON.parse(text); // converti in JSON
+        })
+        .then(data => {
+            if(data.error) { 
+                alert("Errore: " + data.error);
+                return;
+            }
+
+            let table = document.getElementById("table");
+            table.innerHTML = "<tr><th>Giorno</th><th>Temp (°C)</th></tr>";
+
+            data.forEach((temp, index) => {
+                let row = table.insertRow();
+                row.insertCell(0).innerText = "Giorno " + (index + 1);
+                row.insertCell(1).innerText = temp;
+            });
+        })
+        .catch(error => {
+            alert("Errore: " + error);
+        });
+}
+</script>
+
+</body>
+</html>
